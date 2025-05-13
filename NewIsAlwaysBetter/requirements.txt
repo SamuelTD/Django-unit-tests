@@ -9,3 +9,5 @@ mssql==1.0.1
 whitenoise==6.9.0
 requests
 gunicorn
+shap
+matplotlib

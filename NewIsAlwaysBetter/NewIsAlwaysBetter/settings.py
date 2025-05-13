@@ -94,29 +94,29 @@ WSGI_APPLICATION = 'NewIsAlwaysBetter.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME':os.getenv('DB_NAME'),
-        'USER':os.getenv('DB_USERNAME'),
-        'PASSWORD':os.getenv('DB_PASSWORD'),
-        'HOST':os.getenv('DB_HOST'),
-        'PORT': '',  # Laisser vide, Azure SQL utilise le port par défaut (1433)
-        'OPTIONS': {
-            'driver': 'ODBC Driver 18 for SQL Server',  # Spécifiez le driver installé
-            'extra_params': 'TrustServerCertificate=yes;',  # Pour ignorer les erreurs SSL si besoin
-        },
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME':os.getenv('DB_NAME'),
+#         'USER':os.getenv('DB_USERNAME'),
+#         'PASSWORD':os.getenv('DB_PASSWORD'),
+#         'HOST':os.getenv('DB_HOST'),
+#         'PORT': '',  # Laisser vide, Azure SQL utilise le port par défaut (1433)
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 18 for SQL Server',  # Spécifiez le driver installé
+#             'extra_params': 'TrustServerCertificate=yes;',  # Pour ignorer les erreurs SSL si besoin
+#         },
+#     }
+# }
 
 
 # Uncomment for local database.
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation
