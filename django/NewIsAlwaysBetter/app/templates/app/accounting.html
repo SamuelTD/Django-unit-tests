@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}New is always better app{% endblock title %}
+
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="name">
+    <meta name="description" content="description here">
+    <meta name="keywords" content="keywords,here">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/> <!--Replace with your tailwind.css once created-->
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"> <!--Totally optional :) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+{% endblock head %}
+
+{% block content %}
+    {% csrf_token %}
+    <section>
+        <div id="main" class="main-content flex-1 bg-primary mt-12 md:mt-2 pb-24 md:pb-5">
+
+            <div class="bg-secondary pt-3">
+                <div class="rounded-tl-3xl bg-tertiary p-4 shadow text-2xl text-black flex justify-center items-center gap-4">
+                    <a href="{% url 'index' %}?content=releases" class="btn">A paraître</a>
+                    <a href="{% url 'index' %}?content=predictions" class="btn">Prédictions</a>
+                    <a href="{% url 'index' %}?content=dashboard" class="btn">Dashboard</a>
+                    <a href="{% url 'index' %}?content=history" class="btn">Historique</a>
+                    <a href="{% url 'accounting' %}" class="btn">Comptabilité</a>            
+                </div>
+            </div>
+
+             <!-- Container -->
+             <div class="container mx-auto p-4" id="content">
+                <div class="flex flex-col items-center text-white">
+                    <div class="p-8">
+
+                        <h1 class="pt-10 text-4xl font-bold mb-4">Comptabilité</h1>
+                    
+                        {% for week in history %}
+                        <div class="mb-8">
+                            <h2 class="text-2xl font-semibold mb-4">Semaine du {{ week.date }}</h2>
+                            <table class="table-auto w-full text-center border-collapse mb-4">
+                                <thead>
+                                    <tr class="bg-gray-200">
+                                        <th class="border p-2">Film 1</th>
+                                        <th class="border p-2">Film 2</th>
+                                        <th class="border p-2">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">{{ week.movie_1.real_affluence|default:"-" }}</td>
+                                        <td class="border p-2">{{ week.movie_2.real_affluence|default:"-" }}</td>
+                                        <td class="border p-2">{{ week.total_affluence }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">
+                                            {% if week.movie_1 %}
+                                                {{ week.movie_1.real_affluence|mul:10 }} €
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td class="border p-2">
+                                            {% if week.movie_2 %}
+                                                {{ week.movie_2.real_affluence|mul:10 }} €
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td class="border p-2">{{ week.total_revenue }} €</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2" colspan="2">Bénéfice</td>
+                                        <td class="border p-2">{{ week.benefit }} €</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endfor %}
+                    
+                        <h2 class="text-2xl font-bold mt-12 mb-6">Graphique Recettes vs Frais Fixes</h2>
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <canvas id="accountingChart"></canvas>
+                        </div>
+                        
+                    </div>
+                    
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        const ctx = document.getElementById('accountingChart').getContext('2d');
+                        const accountingChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: [{% for week in history %}"{{ week.date }}",{% endfor %}],
+                                datasets: [
+                                    {
+                                        label: 'Recette Réelle (€)',
+                                        borderColor: 'green',
+                                        data: [{% for week in history %}{{ week.total_revenue }},{% endfor %}],
+                                        fill: false,
+                                    },
+                                    {
+                                        label: 'Recette Prédite (€)',
+                                        borderColor: 'blue',
+                                        data: [{% for week in history %}{{ week.predicted_total_revenue }},{% endfor %}],
+                                        fill: false,
+                                    },
+                                    {
+                                        label: 'Frais fixes (€)',
+                                        borderColor: 'red',
+                                        borderDash: [5, 5],
+                                        data: [{% for week in history %}4900,{% endfor %}],
+                                        fill: false,
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+    </section>
+
+{% endblock content %}

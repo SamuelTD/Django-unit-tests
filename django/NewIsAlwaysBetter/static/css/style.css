@@ -1,0 +1,133 @@
+:root {
+    --primary-color: rgb(166 52 70);
+    --primary-color-dark: rgb(166 52 70);
+    --primary-color-darker: rgb(85, 44, 70);
+    --secondary-color:rgb(20, 22, 15);
+    --name-color: rgb(116, 250, 250);
+    --tertiary-color: rgb(251 254 249);
+    --quartary-color: rgb(127 149 209);
+    --quinary-color: rgb(188 128 52);
+}
+
+.primary-color{
+    color: var(--primary-color);
+}
+
+.secondary-color{
+    color: var(--secondary-color);
+}
+
+.tertiary-color{
+    color: var(--tertiary-color);
+}
+
+.bg-primary{
+    background-color: var(--primary-color);
+}
+
+.bg-secondary{
+    background-color: var(--secondary-color);
+}
+
+.bg-tertiary{
+    background-color: var(--tertiary-color);
+}
+
+.bg-quartary{
+    background-color: var(--quartary-color);
+}
+
+.bg-quinary{
+    background-color: var(--quinary-color);
+}
+
+/* Conteneur des liens */
+.links-container {
+    display: flex;
+    gap: 20px; /* Espacement entre les liens */
+    flex: 1; /* Occupe l'espace central */
+    justify-content: center; /* Centre les liens horizontalement */
+}
+
+/* Style des liens */
+.link {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+strong.name{
+    color: var(--name-color);
+    font-weight: bold;
+}
+
+/* Formulaires de navigation en ligne */
+nav.inline {
+    display: inline-block; /* Assure un alignement horizontal propre */
+}
+
+
+/* Style des boutons */
+.btn {
+    background-color: var(--primary-color-dark);
+    color: var(--tertiary-color);
+    border: 1px solid var(--secondary-color);
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--primary-color-darker);
+    color: #ffffff;
+}
+
+.btn_blue {
+    background-color: var(--primary-color);
+    color: white;
+    border: 1px solid white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn_blue:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+.btn_careful {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn_careful:hover {
+    background-color: var(--primary-color);
+    color: red;
+}
+
+.fake-button {
+    background-color: rgb(57, 57, 59);
+    color: red;
+    border: 1px solid #007bff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.green{
+    color: green;
+    font-weight: bold;
+}

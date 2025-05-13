@@ -1,0 +1,65 @@
+{% extends 'base.html'%}
+{% load custom_filters %}
+{% load static %}
+
+{% block title%}Login{%endblock%}
+
+{% block content%}
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+<div class="flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8">
+        <div class="bg-tertiary shadow-md rounded-md p-6">
+
+            <img src="{% static 'images/logo_old.png' %}" alt="Site Logo" class="w-32 mx-auto">
+
+            <h2 class="my-3 text-center text-3xl font-bold tracking-tight primary-color">
+                Sign in
+            </h2>
+
+            <form class="space-y-6" method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div>
+                    <div class="flex items-center">
+                        <!-- Icône avec Tooltip -->
+                        {% if field.help_text %}
+                        <div x-data="{ open: false }" class="relative mr-2">
+                            <span @mouseover="open = true" @mouseleave="open = false" class="cursor-pointer text-gray-400">
+                                (❔)
+                            </span>
+                            <div x-show="open" x-transition.opacity class="absolute left-full ml-2 top-1/2 -translate-y-1/2 w-40 p-2 text-sm text-white bg-black rounded shadow-lg">
+                                {{ field.help_text }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Label -->
+                        <label for="{{ field.id_for_label }}" class="secondary-color font-bold text-left">
+                            {{ field.label }} :
+                        </label>
+                    </div>
+                    <div class="mt-1">
+                        {{ field|add_class:"p-2 border border-blue-500 rounded w-full" }}
+                    </div>
+                </div>
+                <div class="mt-1">
+                    {% for error in field.errors %}
+                        <p class="text-red-500 text-sm">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div>
+                    <button type="submit"
+                        class="flex w-full justify-center rounded-md border border-transparent btn_blue py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2">
+                        Sign in
+                        </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    
+{%endblock%}

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}New is always better app{% endblock title %}
+
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="name">
+    <meta name="description" content="description here">
+    <meta name="keywords" content="keywords,here">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/> <!--Replace with your tailwind.css once created-->
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"> <!--Totally optional :) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+{% endblock head %}
+
+{% block content %}
+    {% csrf_token %}
+    <section>
+        <div id="main" class="main-content flex-1 bg-primary mt-12 md:mt-2 pb-24 md:pb-5">
+
+            <div class="bg-secondary pt-3">
+                <div class="rounded-tl-3xl bg-tertiary p-4 shadow text-2xl text-black flex justify-center items-center gap-4">
+                    <button class="btn" onclick="changeContent('releases')">A paraître</button>
+                    <button class="btn" onclick="changeContent('predictions')">Prédictions</button>
+                    <button class="btn" onclick="changeContent('dashboard')">Dashboard</button>
+                    <button class="btn" onclick="changeContent('history')">Historique</button>
+                    <a href="{% url 'accounting' %}" class="btn">Comptabilité</a>
+                </div>
+            </div>
+            {% if  is_history %}
+                <script>window.onload = () => changeContent('history');</script>
+            {% elif is_releases %}
+                <script>window.onload = () => changeContent('releases');</script>
+            {% elif is_predictions %}
+                <script>window.onload = () => changeContent('predictions');</script>
+            {% elif is_dashboard %}
+                <script>window.onload = () => changeContent('dashboard');</script>
+            {% endif %}
+             <!-- Container -->
+             <div class="container mx-auto p-4" id="content">
+                <div class="flex flex-col items-center text-white">
+                    <h1 class="pt-10 text-4xl font-bold mb-4">Bienvenue sur votre application !</h1>
+                    <img src="{% static 'images/licorn.png' %}" alt="Licorn Logo" class="w-64" />
+                </div>
+            </div>
+            
+        </div> 
+    </section>
+
+    <script>
+        function changeContent(contentId) {
+          var contentDiv = document.getElementById('content');
+          if (contentId === 'releases') {
+            contentDiv.innerHTML =
+            `<h1 class="text-3xl font-bold text-center mb-8 tertiary-color pt-5">A paraître</h1>
+            <div class="border-t border-white w-[75%] mx-auto pt-5"></div>
+            <!-- Responsive Grid: 1 col on extra-small screens, 2 on small, 3 on medium, 4 on large, and 5 on extra-large screens -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            
+                {% for picture, title, synopsis, url in movie_list %}
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <img src="{{ picture }}" class="mb-4" />
+                        <h2 class="text-xl font-bold mb-2">
+                            <a href="{{ url }}" target="_blank" class="text-blue-600 hover:underline">
+                                {{ title }}
+                            </a>
+                        </h2>
+                        <p class="text-gray-600">{{ synopsis }}</p>
+                    </div>
+                {% endfor %}
+            </div>`;
+          } else if (contentId === 'predictions') {
+            contentDiv.innerHTML =
+            `<h1 class="text-3xl font-bold text-center mb-8 tertiary-color pt-5">Prédictions de la semaine </h1>
+            <div class="border-t border-white w-[75%] mx-auto pt-5"></div>
+            <!-- Responsive Grid: 1 col on extra-small screens, 2 on small, 3 on medium, 4 on large, and 5 on extra-large screens -->
+            <div class="grid grid-cols-4 justify-items-center gap-[10px] pb-5">
+                <div></div>
+
+                {% for prediction in predictions %}
+                    {% if forloop.counter <= 2%}
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            {% if forloop.counter == 1 %}
+                                <div class="flex justify-center mb-2">
+                                    <img src="{% static 'images/gold_crown.svg' %}" class="w-16" />
+                                </div>
+                                <img src="{{ prediction.picture_url }}"></img>
+                            {% else %}
+                                <div class="flex justify-center mb-2">
+                                    <img src="{% static 'images/silver_crown.svg' %}" class="w-16" />
+                                </div>
+                                <img src="{{ prediction.picture_url }}"></img>
+                            {% endif %}
+                               
+                                <h2 class="text-xl font-bold mb-2">
+                                    <a href="{{ prediction.url }}" target="_blank" class="text-blue-600 hover:underline">
+                                        {{ prediction.title }}
+                                    </a>
+                                </h2>
+                                <p class="text-gray-600">Affluence espérée : {{ prediction.predicted_affluence }}</p>
+                                <p class="text-gray-600">Affluence espérée 2 : {{ prediction.predicted_affluence_2 }}</p>
+                                {% if prediction.id %}
+                                    <a href="{% url 'predictions' pk=prediction.id %}" class="text-gray-600">Détail prédiction</a>
+                                {% else %}
+                                    <p>No prediction available.</p>
+                                {% endif %}
+                        </div>
+                        {% if forloop.counter == 2 %}
+                            <div></div>
+                            </div>
+                            <div class="border-t border-white w-[75%] mx-auto pt-5"></div>
+                        {% endif %}
+                    {% elif forloop.counter == 3 %}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                    <h2 class="text-xl font-bold mb-2">
+                                        <a href="{{ prediction.url }}" target="_blank" class="text-blue-600 hover:underline">
+                                            {{ prediction.title }}
+                                        </a>
+                                    </h2>
+                                    <p class="text-gray-600">Affluence espérée : {{ prediction.predicted_affluence }}</p>
+                                    <p class="text-gray-600">Affluence espérée 2 : {{ prediction.predicted_affluence_2 }}</p>
+                                    {% if prediction.id %}
+                                        <a href="{% url 'predictions' pk=prediction.id %}" class="text-gray-600">Détail prédiction</a>
+                                    {% else %}
+                                        <p>No prediction available.</p>
+                                    {% endif %}
+                            </div>
+                    {% else %}
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                                    <h2 class="text-xl font-bold mb-2">
+                                        <a href="{{ prediction.url }}" target="_blank" class="text-blue-600 hover:underline">
+                                            {{ prediction.title }}
+                                        </a>
+                                    </h2>
+                                    <p class="text-gray-600">Affluence espérée : {{ prediction.predicted_affluence }}</p>
+                                    <p class="text-gray-600">Affluence espérée 2 : {{ prediction.predicted_affluence_2 }}</p>
+                                    {% if prediction.id %}
+                                        <a href="{% url 'predictions' pk=prediction.id %}" class="text-gray-600">Détail prédiction</a>
+                                    {% else %}
+                                        <p>No prediction available.</p>
+                                    {% endif %}
+                            </div>
+                    {% endif %}
+                 {% endfor %}  
+            </div>`;
+          } else if (contentId === 'history') {
+            contentDiv.innerHTML =
+                `<h1 class="text-3xl font-bold text-center mb-8 tertiary-color pt-5">Historique </h1>
+                <div class="border-t border-white w-[75%] mx-auto pt-5"></div>
+                <div class="container mx-auto px-4 py-6">
+
+                    {% for week in history %}
+
+                        <!-- Week title -->
+                        <h1 class="text-2xl text-white font-bold text-center mb-6">Semaine du {{ week.date }}</h1>
+
+                        <!-- Grid layout like predictions section -->
+                        <div class="grid grid-cols-4 justify-items-center gap-[10px] pb-5">
+
+                            <!-- Empty spacer column -->
+                            <div></div>
+
+                            <!-- Movie 1 -->
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex justify-center mb-2">
+                                    <img src="{% static 'images/gold_crown.svg' %}" class="w-16" />
+                                </div>
+                                <img src="{{ week.movie_1.picture_url }}" />
+                                <h2 class="text-xl font-bold mb-2">
+                                    <a href="{{ week.movie_1.url }}" target="_blank" class="text-blue-600 hover:underline">
+                                        {{ week.movie_1.title }}
+                                    </a>
+                                </h2>
+                                <p class="text-gray-600">Affluence espérée : {{ week.movie_1.predicted_affluence }}</p>
+                                <p class="text-gray-600">
+                                    Affluence réelle :
+                                    {% if week.movie_1.real_affluence %}
+                                        {% if week.movie_1.real_affluence > week.movie_1.predicted_affluence %}
+                                            <span class="text-green-600 font-bold">{{ week.movie_1.real_affluence }}</span>
+                                        {% else %}
+                                            <span class="text-red-600 font-bold">{{ week.movie_1.real_affluence }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-yellow-600 font-bold">Non renseignée</span>
+                                    {% endif %}
+                                </p>
+                                <form method="post" action="{% url 'set_affluence' week.movie_1.id %}" class="mt-2">
+                                    {% csrf_token %}
+                                    <input type="number" name="real_affluence" placeholder="Entrer affluence" class="border p-2 rounded w-full mb-2 text-black" value="{{ week.movie_1.real_affluence }}">
+                                    <button type="submit" class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">Enregistrer</button>
+                                </form>
+                            </div>
+
+                            <!-- Movie 2 -->
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <div class="flex justify-center mb-2">
+                                    <img src="{% static 'images/silver_crown.svg' %}" class="w-16" />
+                                </div>
+                                <img src="{{ week.movie_2.picture_url }}" />
+                                <h2 class="text-xl font-bold mb-2">
+                                    <a href="{{ week.movie_2.url }}" target="_blank" class="text-blue-600 hover:underline">
+                                        {{ week.movie_2.title }}
+                                    </a>
+                                </h2>
+                            <p class="text-gray-600">Affluence espérée : {{ week.movie_2.predicted_affluence }}</p>
+                                <p class="text-gray-600">
+                                    Affluence réelle :
+                                    {% if week.movie_2.real_affluence %}
+                                        {% if week.movie_1.real_affluence > week.movie_2.predicted_affluence %}
+                                            <span class="text-green-600 font-bold">{{ week.movie_2.real_affluence }}</span>
+                                        {% else %}
+                                            <span class="text-red-600 font-bold">{{ week.movie_2.real_affluence }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-yellow-600 font-bold">Non renseignée</span>
+                                    {% endif %}
+                                </p>
+                                <form method="post" action="{% url 'set_affluence' week.movie_2.id %}" class="mt-2">
+                                    {% csrf_token %}
+                                    <input type="number" name="real_affluence" placeholder="Entrer affluence" class="border p-2 rounded w-full mb-2 text-black" value="{{ week.movie_2.real_affluence }}">
+                                    <button type="submit" class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">Enregistrer</button>
+                                </form>
+                            </div>
+
+                            <!-- Ending spacer column -->
+                            <div></div>
+                        </div>
+
+                        {% if not forloop.last %}
+                            <!-- Divider -->
+                            <div class="border-t border-white w-[75%] mx-auto pt-5"></div>
+                        {% endif %}
+
+                    {% endfor %}
+                </div>`;
+          }
+          else if (contentId === 'dashboard') {
+            contentDiv.innerHTML =
+              `<div class="container mx-auto px-4 py-6">
+                <!-- Sleek, rounded container -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="max-w-5xl mx-auto">
+                    <!-- Responsive grid: 1 column on small screens (adjust md:grid-cols-1 if needed) -->
+                    <div class="grid grid-cols-1 md:grid-cols-1 gap-[10px]">
+                        {% for figure in figures %}
+                             <h2 class="pd-5 text-black font-serif font-bold text-3xl tracking-wide mb-2 text-center">Figure {{ forloop.counter }}</h2>
+                             <div class="bg-tertiary rounded-lg shadow-md overflow-hidden">                       
+                                <img src="{% static 'images/figures/' %}{{ figure }}" alt="Picture {{ forloop.counter }}" class="w-full h-auto object-cover pb-5">                            
+                            </div>
+                        <div class="border-t border-black w-[75%] mx-auto pt-5 pb-5 "></div>
+                        {% endfor %}
+                    </div>
+                    </div>
+                </div>
+                </div>
+                `;
+          }
+        }
+      </script>
+
+{% endblock content %}

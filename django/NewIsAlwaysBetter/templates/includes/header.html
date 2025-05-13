@@ -1,0 +1,26 @@
+{% load static %}
+
+<header class="bg-primary grid grid-cols-3 items-center p-4">
+ 
+    <!-- Left column: empty to help center the title -->
+    <div>
+        <a href="{% url "index"%}" class="flex items-center text-primary hover:text-secondary">
+            <img src="{% static 'images/logo.png' %}" alt="Site Logo" class="w-32 mx-auto">
+        </a>
+    </div>
+    <!-- Center column: title -->
+    <h1 class="text-center tertiary-color text-6xl font-extrabold tracking-wider drop-shadow-md" style="font-family: 'Bebas Neue', cursive;">
+        New is always better
+      </h1>      
+    <!-- Right column: login button -->
+    <div class="flex justify-end">
+    {% if user.is_authenticated %}
+        <form method="post" class="inline" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class='btn' type="submit">Logout</button>
+        </form>       
+    {% endif %}        
+    </div>
+
+  </header>
+  

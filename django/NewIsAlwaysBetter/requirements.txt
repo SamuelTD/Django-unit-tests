@@ -1,0 +1,11 @@
+django
+django-tailwind
+django-browser-reload
+dotenv==0.9.9
+pandas==2.2.3
+pyodbc==5.2.0
+mssql-django
+mssql==1.0.1
+whitenoise==6.9.0
+requests
+gunicorn

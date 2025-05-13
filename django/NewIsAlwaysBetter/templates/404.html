@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-white h-screen flex items-center justify-center">
+    <div class="ml-5 mr-5 mt-5 mb-5 bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+        <h1 class="text-4xl font-bold text-gray-800 mb-8">404 - Page Not Found</h1>
+        <p class="text-gray-600 mb-6">The page you are looking for might have been removed, had its name changed or is
+            temporarily unavailable.</p>
+        <a href={% url "home"%} class="inline-block py-3 px-6 btn_blue">Go
+            back to homepage</a>
+    </div>
+</div>  
+{% endblock content %}
