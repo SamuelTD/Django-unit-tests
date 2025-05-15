@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Configuration des variables (modifiez-les selon vos besoins)
-RESOURCE_GROUP="raddecheRG"
-ACR_NAME="raddecheregistry"  # Nom de votre Azure Container Registry
+RESOURCE_GROUP="sthorezRG"
+ACR_NAME="sthorezregistry"  # Nom de votre Azure Container Registry
 REGION="francecentral"  # Région où vous souhaitez déployer
 IMAGE_NAME="newisalwaysbetter"  # Nom de l'image Docker
 CONTAINER_NAME="djangoluvirasa"  # Nom du conteneur

@@ -28,7 +28,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-# Build Tailwind via django-tailwind (remplace "theme" si ton app s'appelle autrement)
+# Build Tailwind via django-tailwind (replace "theme" if the tailwind app was named differently)
 RUN python manage.py tailwind install
 RUN python manage.py tailwind build
 
